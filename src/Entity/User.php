@@ -22,7 +22,7 @@ class User
     private $Name;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={default:true})
      */
     private $admin;
 
