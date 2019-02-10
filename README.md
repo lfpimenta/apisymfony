@@ -12,9 +12,9 @@ Restfull api endpoints in [here](https://github.com/lfpimenta/apisymfony/blob/ma
 
 ## Domain Diagrams
 
-### [I can add users](https://github.com/lfpimenta/apisymfony/blob/master/docs/uml/addUser.png)
-### [I delete users](https://github.com/lfpimenta/apisymfony/blob/master/docs/uml/deleteUser.png)
-### [I can add groups](https://github.com/lfpimenta/apisymfony/blob/master/docs/uml/addGroup.png)
-### [I can delete groups](https://github.com/lfpimenta/apisymfony/blob/master/docs/uml/deleteGroup.png)
-### [I can associate users to groups](https://github.com/lfpimenta/apisymfony/blob/master/docs/uml/assignUsersToGroup.png)
-### [I can remove users from groups](https://github.com/lfpimenta/apisymfony/blob/master/docs/uml/removeUserFromGroup.png)
+#### [I can add users](https://github.com/lfpimenta/apisymfony/blob/master/docs/uml/addUser.png)
+#### [I delete users](https://github.com/lfpimenta/apisymfony/blob/master/docs/uml/deleteUser.png)
+#### [I can add groups](https://github.com/lfpimenta/apisymfony/blob/master/docs/uml/addGroup.png)
+#### [I can delete groups](https://github.com/lfpimenta/apisymfony/blob/master/docs/uml/deleteGroup.png)
+#### [I can associate users to groups](https://github.com/lfpimenta/apisymfony/blob/master/docs/uml/assignUsersToGroup.png)
+#### [I can remove users from groups](https://github.com/lfpimenta/apisymfony/blob/master/docs/uml/removeUserFromGroup.png)
