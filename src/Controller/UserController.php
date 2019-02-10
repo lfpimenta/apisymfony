@@ -60,7 +60,7 @@ class UserController extends AbstractController {
 	public function display($id, Request $request) {
         if($request->isMethod('DELETE')) {
             try {
-                $this->getManagedUser()->deleteUser($id);
+                $this->getManagedUser()->deleteRecord($id);
             } catch (ORMException $e) {
                 return new Response('', Response::HTTP_PRECONDITION_FAILED);
             } catch (OptimisticLockException $e) {

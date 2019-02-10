@@ -23,7 +23,7 @@ class UserGroup
     private $userid;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Group", inversedBy="userGroups")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Groups", inversedBy="userGroups")
      * @ORM\JoinColumn(nullable=false)
      */
     private $groupid;
@@ -45,14 +45,14 @@ class UserGroup
         return $this;
     }
 
-    public function getGroupid(): ?Group
+    public function getGroupid(): ?Groups
     {
         return $this->groupid;
     }
 
-    public function setGroupid(?Group $groupid): self
+    public function setGroupid(?Groups $groups): self
     {
-        $this->groupid = $groupid;
+        $this->groupid = $groups;
 
         return $this;
     }
