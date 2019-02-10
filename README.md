@@ -3,7 +3,7 @@
 This project was developed with symfony 4.2 framework
 
 ## DB Diagram
- [Diagram!](https://github.com/lfpimenta/apisymfony/blob/master/docs/er/Readme.md)
+[Diagram](https://github.com/lfpimenta/apisymfony/blob/master/docs/er/Readme.md)
 
 
 ## API
