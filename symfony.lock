@@ -176,6 +176,9 @@
     "symfony/polyfill-mbstring": {
         "version": "v1.10.0"
     },
+    "symfony/polyfill-php72": {
+        "version": "v1.10.0"
+    },
     "symfony/process": {
         "version": "v4.2.3"
     },
@@ -189,6 +192,9 @@
         }
     },
     "symfony/stopwatch": {
+        "version": "v4.2.3"
+    },
+    "symfony/var-dumper": {
         "version": "v4.2.3"
     },
     "symfony/var-exporter": {

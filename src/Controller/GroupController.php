@@ -8,7 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class GroupController extends AbstractController {
 	/**
-	 * @Route("api/groups", methods={"GET"}, name="groups_list")
+	 * @Route("api/groups", methods={"GET","POST"}, name="groups_list_store")
 	 **/
 	public function list() {
 		return $this->json("list");
@@ -16,44 +16,23 @@ class GroupController extends AbstractController {
 
 
 	/**
-	 * @Route("api/groups/{id}", methods={"GET"}, name="groups_display")
+	 * @Route("api/groups/{id}", methods={"GET","DELETE"}, name="groups_delete_show")
 	 **/
 	public function display($id) {
 		return new Response("test display single $id record");
 	}
 
 	/**
-	 * @Route("api/groups/", methods={"POST"}, name="groups_store")
-	 **/
-	public function store() {
-		return new Response("test store");
-	}
-
-	/**
-	 * @Route("api/groups/{id}", methods={"DELETE"}, name="groups_delete")
-	 **/
-	public function delete($id) {
-		return new Response("test delete");
-	}
-
-	/**
-	 * @Route("api/groups/{groupId}/users", methods={"GET"}, name="groups_users_list")
+	 * @Route("api/groups/{groupId}/users", methods={"GET","POST"}, name="groups_users_list_store")
 	 **/
 	public function listAssociateUsers($groupId) {
-		return new Response("test list");
+		return new Response("test");
 	}
 
 	/**
-	 * @Route("api/groups/{groupId}/users", methods={"POST"}, name="groups_users_store")
+	 * @Route("api/groups/{groupId}/users/{userIds}", methods={"DELETE"}, name="groups_users_unassociate")
 	 **/
-	public function associateUsers($groupId) {
-		return new Response("test store");
-	}
-
-	/**
-	 * @Route("api/groups/{groupId}/users", methods={"DELETE"}, name="groups_users_delete")
-	 **/
-	public function dessociateUsers($groupId) {
-		return new Response("test store");
+	public function dessociateUsers($groupId, $userId) {
+		return new Response("test");
 	}
 }
