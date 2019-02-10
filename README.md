@@ -3,7 +3,8 @@
 This project was developed with symfony 4.2 framework
 
 ## DB Diagram
-![DB Diagram](https://github.com/lfpimenta/apisymfony/blob/master/docs/er/ER_Model.png)
+ [Diagram!](https://github.com/lfpimenta/apisymfony/blob/master/docs/er/Readme.md)
+
 
 ## API
 
@@ -21,4 +22,3 @@ Restfull api endpoints:
 ## Domain Diagrams
 
 ###
-![DB Diagram](https://github.com/lfpimenta/apisymfony/blob/master/docs/er/ER_Model.png)
