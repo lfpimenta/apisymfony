@@ -1,0 +1,78 @@
+title Add User
+
+AdminUser->ApiEndPoint: POST api/users
+ApiEndPoint->UserController: Router calls action
+UserController->UserController:validatesInput()
+UserController->ManagedUser: save()
+note right of ManagedUser:  processes
+ManagedUser->UserController:
+UserController->ApiEndPoint: writesResponse
+ApiEndPoint->AdminUser: HTTP_STATUS 201:OK
+
+
+
+title Delete User
+
+AdminUser->ApiEndPoint: DELETE api/users/{userId}
+ApiEndPoint->UserController: Router calls action
+UserController->UserController:validatesInput()
+UserController->ManagedUser: delete(userId)
+note right of ManagedUser:  find userId/deletes
+ManagedUser->UserController:
+UserController->ApiEndPoint: writesResponse
+ApiEndPoint->AdminUser: HTTP_STATUS 204:NO CONTENT
+
+
+title Assign User to a group
+
+AdminUser->ApiEndPoint: POST api/groups/{groupId}/users
+ApiEndPoint->GroupController: Router calls action
+GroupController->GroupController:validatesInput()
+GroupController->ManagedGroup: associate(groupId,userIds)
+note right of ManagedGroup: 1. find userGroup
+note right of ManagedGroup: 2. validates each user
+note right of ManagedGroup: 3a. makes user list uniq
+note right of ManagedGroup: 3b. user list intersect with previus group list
+note right of ManagedGroup: 4. associate user list to group
+ManagedGroup->GroupController:
+GroupController->ApiEndPoint: writesResponse
+ApiEndPoint->AdminUser: HTTP_STATUS 201:OK
+
+title Removes Users from a group
+
+AdminUser->ApiEndPoint: DELETE api/groups/{groupId}/users/{userIds}
+ApiEndPoint->GroupController: Router calls action
+GroupController->GroupController:validatesInput()
+GroupController->ManagedGroup: deassociate(groupId,userIds)
+note right of ManagedGroup: 1. find userGroup
+note right of ManagedGroup: 2. validates each user
+note right of ManagedGroup: 3. removes entries
+ManagedGroup->GroupController:
+GroupController->ApiEndPoint: writesResponse
+ApiEndPoint->AdminUser: HTTP_STATUS 204:NO_CONTENT
+
+
+title Add Group
+
+AdminUser->ApiEndPoint: POST api/users
+ApiEndPoint->GroupController: Router calls action
+GroupController->GroupController:validatesInput()
+GroupController->ManagedGroup: save()
+note right of ManagedGroup:  processes
+ManagedGroup->GroupController:
+GroupController->ApiEndPoint: writesResponse
+ApiEndPoint->AdminUser: HTTP_STATUS 201:OK
+
+
+
+title Delete Group
+
+AdminUser->ApiEndPoint: DELETE api/users/{userId}
+ApiEndPoint->GroupController: Router calls action
+GroupController->GroupController:validatesInput()
+GroupController->ManagedGroup: delete(userId)
+note right of ManagedGroup:  find userId/deletes
+ManagedGroup->GroupController:
+GroupController->ApiEndPoint: writesResponse
+ApiEndPoint->AdminUser: HTTP_STATUS 204:NO CONTENT
+
