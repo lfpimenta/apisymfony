@@ -6,7 +6,6 @@ use App\Entity\Groups;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\ORMInvalidArgumentException;
-use Symfony\Component\Serializer\Serializer;
 
 class ManagedGroup extends ManagedAbstract
 {
@@ -31,18 +30,30 @@ class ManagedGroup extends ManagedAbstract
     }
 
     /**
-     * @param $user
+     * @param $record
      * @return array
      */
-    protected function toArray($user): array
+    protected function toArray($record): array
     {
-        if ($user === null) {
+        if ($record === null) {
             return [];
         }
 
+        if(is_array($record)) {
+            $result = [];
+            foreach ($record as $rec) {
+                $result[] = [
+                    'id' => $rec->getId(),
+                    'name' => $rec->getName(),
+                ];
+            }
+
+            return $result;
+        }
+
         return [
-            'id' => $user->getId(),
-            'name' => $user->getName(),
+            'id' => $record->getId(),
+            'name' => $record->getName(),
         ];
     }
 }

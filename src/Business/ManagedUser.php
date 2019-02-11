@@ -6,7 +6,8 @@ namespace App\Business;
 use App\Entity\User;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\Serializer\Serializer;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 
 class ManagedUser extends ManagedAbstract
 {
@@ -17,6 +18,11 @@ class ManagedUser extends ManagedAbstract
         $this->objectRepository = $repositoryObject;
     }
 
+    /**
+     * @param $data
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function save($data) {
         $this->entity->setName($data['name']);
         $this->entity->setAdmin($data['admin']);
@@ -27,19 +33,32 @@ class ManagedUser extends ManagedAbstract
     }
 
     /**
-     * @param $user
+     * @param $record
      * @return array
      */
-    protected function toArray($user): array
+    protected function toArray($record): array
     {
-        if ($user === null) {
+        if ($record === null) {
             return [];
         }
 
+        if(is_array($record)) {
+            $result = [];
+            foreach ($record as $rec) {
+                $result[] = [
+                    'id' => $rec->getId(),
+                    'name' => $rec->getName(),
+                    'admin' => $rec->getAdmin(),
+                ];
+            }
+
+            return $result;
+        }
+
         return [
-            'id' => $user->getId(),
-            'name' => $user->getName(),
-            'admin' => $user->getAdmin(),
+            'id' => $record->getId(),
+            'name' => $record->getName(),
+            'admin' => $record->getAdmin(),
         ];
     }
 

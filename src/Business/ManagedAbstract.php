@@ -5,6 +5,7 @@ namespace App\Business;
 use App\Entity\User;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\ORMException;
 
 
 class ManagedAbstract implements ManagedInterface

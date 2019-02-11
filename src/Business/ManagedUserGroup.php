@@ -9,7 +9,6 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\ORMInvalidArgumentException;
-use Symfony\Component\Serializer\Serializer;
 
 class ManagedUserGroup extends ManagedAbstract
 {
@@ -80,7 +79,7 @@ class ManagedUserGroup extends ManagedAbstract
     }
 
     /**
-     * @param $record UserGroup
+     * @param $record
      * @return array
      */
     public function toArray($record): array

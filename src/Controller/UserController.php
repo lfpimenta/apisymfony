@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Business\ManagedUser;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Exception;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -12,9 +13,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Entity\User;
 
 class UserController extends AbstractController {
-	/**
-	 * @Route("api/users", methods={"GET", "POST"}, name="users_list_store")
-	 **/
+    /**
+     * @Route("api/users", methods={"GET", "POST"}, name="users_list_store")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
 	public function list(Request $request) {
         if($request->isMethod('GET')) {
 			return $this->json(
@@ -54,9 +59,12 @@ class UserController extends AbstractController {
 	}
 
 
-	/**
-	 * @Route("api/users/{id}", methods={"GET", "DELETE"}, name="users_delete_display")
-	 **/
+    /**
+     * @Route("api/users/{id}", methods={"GET", "DELETE"}, name="users_delete_display")
+     * @param $id
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse|Response
+     */
 	public function display($id, Request $request) {
         if($request->isMethod('DELETE')) {
             try {

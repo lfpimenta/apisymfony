@@ -6,6 +6,8 @@ use App\Business\ManagedGroup;
 use App\Business\ManagedUserGroup;
 use App\Entity\Groups;
 use App\Entity\UserGroup;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Exception;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,9 +15,11 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class GroupController extends AbstractController {
-	/**
-	 * @Route("api/groups", methods={"GET","POST"}, name="groups_list_store")
-	 **/
+    /**
+     * @Route("api/groups", methods={"GET","POST"}, name="groups_list_store")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
 	public function listStore(Request $request) {
         if($request->isMethod('GET')) {
             return $this->json(
@@ -68,9 +72,9 @@ class GroupController extends AbstractController {
         if($request->isMethod('DELETE')) {
             try {
                 $this->getManagedGroup()->deleteRecord($id);
-            } catch (ORMException $e) {
-                return new Response('', Response::HTTP_PRECONDITION_FAILED);
             } catch (OptimisticLockException $e) {
+                return new Response('', Response::HTTP_PRECONDITION_FAILED);
+            } catch (ORMException $e) {
                 return new Response('', Response::HTTP_PRECONDITION_FAILED);
             }
 
@@ -85,9 +89,12 @@ class GroupController extends AbstractController {
         return new Response('', Response::HTTP_NOT_FOUND);
 	}
 
-	/**
-	 * @Route("api/groups/{groupId}/users", methods={"GET","POST"}, name="groups_users_list_store")
-	 **/
+    /**
+     * @Route("api/groups/{groupId}/users", methods={"GET","POST"}, name="groups_users_list_store")
+     * @param $groupId
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
 	public function listAssociateUsers($groupId, Request $request) {
         if($request->isMethod('GET')) {
             $record = $this->getManagedUserGroup()->findBy(['groupid' => $groupId]);
@@ -128,21 +135,25 @@ class GroupController extends AbstractController {
         return $response;
 	}
 
-	/**
-	 * @Route("api/groups/{groupId}/users/{userId}", methods={"DELETE"}, name="groups_users_unassociate")
-	 **/
+    /**
+     * @Route("api/groups/{groupId}/users/{userId}", methods={"DELETE"}, name="groups_users_unassociate")
+     * @param $groupId
+     * @param $userId
+     * @param Request $request
+     * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
 	public function dessociateUsers($groupId, $userId, Request $request) {
-        if($request->isMethod('DELETE')) {
-            try {
-                $this->getManagedUserGroup()->deleteRecord(['groupid' => $groupId, 'userid' => $userId]);
-            } catch (ORMException $e) {
-                return new Response('', Response::HTTP_PRECONDITION_FAILED);
-            } catch (OptimisticLockException $e) {
-                return new Response('', Response::HTTP_PRECONDITION_FAILED);
-            }
-
-            return new Response('', Response::HTTP_NO_CONTENT);
+        try {
+            $this->getManagedUserGroup()->deleteRecord(['groupid' => $groupId, 'userid' => $userId]);
+        } catch (OptimisticLockException $e) {
+            return new Response('', Response::HTTP_PRECONDITION_FAILED);
+        } catch (ORMException $e) {
+            return new Response('', Response::HTTP_PRECONDITION_FAILED);
         }
+
+        return new Response('', Response::HTTP_NO_CONTENT);
 	}
 
     protected function getManagedGroup()
