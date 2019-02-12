@@ -19,14 +19,14 @@ class ManagedUserGroup extends ManagedAbstract
     protected $mngUser;
     protected $mngGroup;
 
-    public function __construct(EntityManager $entityManager, $repositoryObject, ManagerRegistry $doctrine = null)
+    public function __construct(ManagerRegistry $managerRegistry, $mngGroup = null, $mngUser = null)
     {
-        $this->entityManager = $entityManager;
+        $this->entityManager = $managerRegistry->getManager();
         $this->entity = new UserGroup();
-        $this->objectRepository = $repositoryObject;
-        $this->doctrine = $doctrine;
-        $this->mngUser = new ManagedUser($this->entityManager, $this->doctrine->getRepository(User::class));
-        $this->mngGroup = new ManagedGroup($this->entityManager, $this->doctrine->getRepository(Groups::class));
+        $this->objectRepository = $managerRegistry->getRepository(UserGroup::class);
+
+        $this->mngUser = $mngUser;
+        $this->mngGroup = $mngGroup;
     }
 
     /**

@@ -47,19 +47,11 @@ class ManagedAbstract implements ManagedInterface
 
     /**
      * @param $id
-     * @throws \Doctrine\ORM\ORMException
+     * @throws ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function deleteRecord($id) {
-        $record = $this->objectRepository->find($id);
-
-        if (!$record) {
-            throw new ORMException('Non existing Record');
-        }
-
-        $this->entityManager->remove($record);
-
-        $this->entityManager->flush();
+        throw new \Exception('not implememented');
     }
 
     /**

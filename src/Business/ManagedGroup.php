@@ -3,6 +3,7 @@
 namespace App\Business;
 
 use App\Entity\Groups;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\ORMInvalidArgumentException;
@@ -10,11 +11,15 @@ use Doctrine\ORM\ORMInvalidArgumentException;
 class ManagedGroup extends ManagedAbstract
 {
 
-    public function __construct(EntityManager $entityManager, $repositoryObject)
+    protected  $mngGroupUser;
+
+    public function __construct(ManagerRegistry $managerRegistry)
     {
-        $this->entityManager = $entityManager;
+        $this->entityManager = $managerRegistry->getManager();
         $this->entity = new Groups();
-        $this->objectRepository = $repositoryObject;
+        $this->objectRepository = $managerRegistry->getRepository(Groups::class);
+
+        $this->mngGroupUser = new ManagedUserGroup($managerRegistry, $this);
     }
 
     /**
@@ -26,6 +31,28 @@ class ManagedGroup extends ManagedAbstract
         $this->entity->setName($data['name']);
 
         $this->entityManager->persist($this->entity);
+        $this->entityManager->flush();
+    }
+
+    /**
+    * @param $id
+    * @throws ORMException
+    * @throws \Doctrine\ORM\OptimisticLockException
+    */
+    public function deleteRecord($id) {
+        $record = $this->objectRepository->find($id);
+
+        if (!$record) {
+            throw new ORMException('Non existing Record');
+        }
+
+        $groupUserRecords = $this->mngGroupUser->findBy(['groupid' => $id]);
+        if ($groupUserRecords) {
+            throw new ORMException('Group has users inside');
+        }
+
+        $this->entityManager->remove($record);
+
         $this->entityManager->flush();
     }
 

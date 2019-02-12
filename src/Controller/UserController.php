@@ -13,21 +13,28 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Entity\User;
 
 class UserController extends AbstractController {
+
     /**
-     * @Route("api/users", methods={"GET", "POST"}, name="users_list_store")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      * @throws ORMException
      * @throws OptimisticLockException
      */
-	public function list(Request $request) {
-        if($request->isMethod('GET')) {
-			return $this->json(
-			    $this->getManagedUser()->getAll(),
-                Response::HTTP_OK
-            );
-		}
+    public function list(Request $request)
+    {
+        return $this->json(
+            $this->getManagedUser()->getAll(),
+            Response::HTTP_OK
+        );
+    }
 
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+	public function store(Request $request) {
         // TODO: validate input, and predict source is from form
 		$body = $request->getContent();
 		$data = json_decode($body, true);
@@ -60,24 +67,29 @@ class UserController extends AbstractController {
 
 
     /**
-     * @Route("api/users/{id}", methods={"GET", "DELETE"}, name="users_delete_display")
+     * @param $id
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse|Response
+     */
+    public function delete($id, Request $request)
+    {
+        try {
+            $this->getManagedUser()->deleteRecord($id);
+        } catch (ORMException $e) {
+            return new Response($e->getMessage(), Response::HTTP_PRECONDITION_FAILED);
+        } catch (OptimisticLockException $e) {
+            return new Response($e->getMessage(), Response::HTTP_PRECONDITION_FAILED);
+        }
+
+        return new Response('', Response::HTTP_NO_CONTENT);
+    }
+
+    /**
      * @param $id
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\JsonResponse|Response
      */
 	public function display($id, Request $request) {
-        if($request->isMethod('DELETE')) {
-            try {
-                $this->getManagedUser()->deleteRecord($id);
-            } catch (ORMException $e) {
-                return new Response('', Response::HTTP_PRECONDITION_FAILED);
-            } catch (OptimisticLockException $e) {
-                return new Response('', Response::HTTP_PRECONDITION_FAILED);
-            }
-
-            return new Response('', Response::HTTP_NO_CONTENT);
-        }
-
         $user = $this->getManagedUser()->show($id);
         if ($user) {
             return $this->json($user, Response::HTTP_OK);
@@ -90,9 +102,6 @@ class UserController extends AbstractController {
      * @return ManagedUser
      */
     protected function getManagedUser(): ManagedUser {
-        return new ManagedUser(
-            $this->getDoctrine()->getManager(),
-            $this->getDoctrine()->getRepository(User::class)
-        );
+        return new ManagedUser($this->getDoctrine());
     }
 }

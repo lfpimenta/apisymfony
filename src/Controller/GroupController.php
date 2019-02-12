@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Business\ManagedGroup;
+use App\Business\ManagedUser;
 use App\Business\ManagedUserGroup;
 use App\Entity\Groups;
 use App\Entity\UserGroup;
@@ -15,19 +16,20 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class GroupController extends AbstractController {
-    /**
-     * @Route("api/groups", methods={"GET","POST"}, name="groups_list_store")
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
-     */
-	public function listStore(Request $request) {
-        if($request->isMethod('GET')) {
-            return $this->json(
+
+    public function list()
+    {
+        return $this->json(
                 $this->getManagedGroup()->getAll(),
                 Response::HTTP_OK
             );
-        }
+    }
 
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+	public function store(Request $request) {
         // TODO: validate input, and predict if source is from form
         $body = $request->getContent();
         $data = json_decode($body, true);
@@ -59,52 +61,62 @@ class GroupController extends AbstractController {
         return $response;
 	}
 
+    /**
+     * @param $id
+     * @param Request $request
+     * @return Response
+     */
+    public function delete($id, Request $request)
+    {
+        try {
+            $this->getManagedGroup()->deleteRecord($id);
+        } catch (OptimisticLockException $e) {
+            return new Response($e->getMessage(), Response::HTTP_PRECONDITION_FAILED);
+        } catch (ORMException $e) {
+            return new Response($e->getMessage(), Response::HTTP_PRECONDITION_FAILED);
+        }
+
+        return new Response('', Response::HTTP_NO_CONTENT);
+    }
 
     /**
-     * @Route("api/groups/{id}", methods={"GET","DELETE"}, name="groups_delete_show")
      * @param $id
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\JsonResponse|Response
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-	public function displayDelete($id, Request $request) {
-        if($request->isMethod('DELETE')) {
-            try {
-                $this->getManagedGroup()->deleteRecord($id);
-            } catch (OptimisticLockException $e) {
-                return new Response('', Response::HTTP_PRECONDITION_FAILED);
-            } catch (ORMException $e) {
-                return new Response('', Response::HTTP_PRECONDITION_FAILED);
-            }
-
-            return new Response('', Response::HTTP_NO_CONTENT);
-        }
-
-        $user = $this->getManagedGroup()->show($id);
-        if ($user) {
-            return $this->json($user, Response::HTTP_OK);
+	public function display($id, Request $request) {
+        $record = $this->getManagedGroup()->show($id);
+        if ($record) {
+            return $this->json($record, Response::HTTP_OK);
         }
 
         return new Response('', Response::HTTP_NOT_FOUND);
 	}
 
     /**
-     * @Route("api/groups/{groupId}/users", methods={"GET","POST"}, name="groups_users_list_store")
      * @param $groupId
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-	public function listAssociateUsers($groupId, Request $request) {
-        if($request->isMethod('GET')) {
-            $record = $this->getManagedUserGroup()->findBy(['groupid' => $groupId]);
+    public function listGroupUser($groupId, Request $request)
+    {
+        $record = $this->getManagedUserGroup()->findBy(['groupid' => $groupId]);
 
-            return $this->json(
-                $this->getManagedUserGroup()->toArray($record),
-                Response::HTTP_OK
-            );
-        }
+        return $this->json(
+            $this->getManagedUserGroup()->toArray($record),
+            Response::HTTP_OK
+        );
 
+    }
+
+    /**
+     * @param $groupId
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+	public function associateUsers($groupId, Request $request) {
         // TODO: validate input, and predict source is from form
         $body = $request->getContent();
         $data = json_decode($body, true);
@@ -136,7 +148,6 @@ class GroupController extends AbstractController {
 	}
 
     /**
-     * @Route("api/groups/{groupId}/users/{userId}", methods={"DELETE"}, name="groups_users_unassociate")
      * @param $groupId
      * @param $userId
      * @param Request $request
@@ -156,20 +167,18 @@ class GroupController extends AbstractController {
         return new Response('', Response::HTTP_NO_CONTENT);
 	}
 
+    protected function getManagedUser()
+    {
+        return new ManagedUser($this->getDoctrine());
+    }
+
     protected function getManagedGroup()
     {
-        return new ManagedGroup(
-            $this->getDoctrine()->getManager(),
-            $this->getDoctrine()->getRepository(Groups::class)
-        );
+        return new ManagedGroup($this->getDoctrine());
     }
 
     protected function getManagedUserGroup()
     {
-        return new ManagedUserGroup(
-            $this->getDoctrine()->getManager(),
-            $this->getDoctrine()->getRepository(UserGroup::class),
-            $this->getDoctrine()
-        );
+        return new ManagedUserGroup($this->getDoctrine(), $this->getManagedGroup(), $this->getManagedUser());
     }
 }

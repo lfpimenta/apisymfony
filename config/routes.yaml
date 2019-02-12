@@ -1,3 +1,55 @@
-#index:
-#    path: /api/users
-#    controller: App\Controller\UserController::list
+users_list:
+    path: api/users
+    controller: App\Controller\UserController::list
+    methods:    [GET]
+
+users_store:
+    path: api/users
+    controller: App\Controller\UserController::store
+    methods:    [POST]
+
+users_display:
+    path: api/users/{id}
+    controller: App\Controller\UserController::display
+    methods:    [GET]
+
+users_delete:
+    path: api/users/{id}
+    controller: App\Controller\UserController::delete
+    methods:    [DELETE]
+
+groups_list:
+    path: api/groups
+    controller: App\Controller\GroupController::list
+    methods:    [GET]
+
+
+groups_store:
+    path: api/groups
+    controller: App\Controller\GroupController::store
+    methods:    [POST]
+
+groups_display:
+    path: api/groups/{id}
+    controller: App\Controller\GroupController::display
+    methods:    [GET]
+
+groups_delete:
+    path: api/groups/{id}
+    controller: App\Controller\GroupController::delete
+    methods:    [DELETE]
+
+groups_users_list:
+    path: api/groups/{groupId}/users
+    controller: App\Controller\GroupController::listGroupUser
+    methods:    [GET]
+
+groups_users_associate:
+    path: api/groups/{groupId}/users
+    controller: App\Controller\GroupController::associateUsers
+    methods:    [POST]
+
+groups_users_dessociate:
+    path: api/groups/{groupId}/users/{userId}
+    controller: App\Controller\GroupController::dessociateUsers
+    methods:    [DELETE]
