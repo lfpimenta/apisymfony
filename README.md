@@ -2,6 +2,24 @@
 
 This project was developed with symfony 4.2 framework
 
+## Setup
+composer install
+
+## Requirements
+mysql server
+
+## Run
+### Run migrations
+In your console run:
+`bin/console doctrine:migrations:migrate`
+
+## Run the server
+In your console run:
+`bin/console server:start`
+
+It will serve on localhost:8000
+
+
 ## DB Diagram
 [Diagram](https://github.com/lfpimenta/apisymfony/blob/master/docs/er/Readme.md)
 
