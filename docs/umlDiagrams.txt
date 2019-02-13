@@ -18,9 +18,16 @@ ApiEndPoint->UserController: Router calls action
 UserController->UserController:validatesInput()
 UserController->ManagedUser: delete(userId)
 note right of ManagedUser:  find userId/deletes
+opt user does not belong to any group
 ManagedUser->UserController:
 UserController->ApiEndPoint: writesResponse
 ApiEndPoint->AdminUser: HTTP_STATUS 204:NO CONTENT
+end
+opt user belongs to a group or more
+ManagedUser->UserController:
+UserController->ApiEndPoint: writesResponse
+ApiEndPoint->AdminUser: HTTP_STATUS 412:PRECONDITON FAILED
+end
 
 
 title Assign User to a group
