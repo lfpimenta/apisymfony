@@ -78,8 +78,21 @@ AdminUser->ApiEndPoint: DELETE api/users/{userId}
 ApiEndPoint->GroupController: Router calls action
 GroupController->GroupController:validatesInput()
 GroupController->ManagedGroup: delete(userId)
-note right of ManagedGroup:  find userId/deletes
+opt group does not exist
+ManagedGroup->GroupController:
+GroupController->ApiEndPoint: writesResponse
+ApiEndPoint->AdminUser: HTTP_STATUS 412:PRECONDITON FAILED
+end
+
+opt group have at least one user inside
+ManagedGroup->GroupController:
+GroupController->ApiEndPoint: writesResponse
+ApiEndPoint->AdminUser: HTTP_STATUS 412:PRECONDITON FAILED
+end
+
+opt group has no user inside
 ManagedGroup->GroupController:
 GroupController->ApiEndPoint: writesResponse
 ApiEndPoint->AdminUser: HTTP_STATUS 204:NO CONTENT
+end
 
