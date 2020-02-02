@@ -1,4 +1,6 @@
 {
+    "name": "lfpimenta/apisymfony",
+    "description": "api exercice in symfony",
     "type": "project",
     "license": "proprietary",
     "require": {
